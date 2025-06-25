@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Transaction, Position, PortfolioSummary, DividendPayment } from '@/types/portfolio';
 
 const STORAGE_KEYS = {

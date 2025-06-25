@@ -1,9 +1,8 @@
-
+import React, { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "@/components/Dashboard";
 import Portfolio from "./Portfolio";
 import Transactions from "./Transactions";
-import { useState } from "react";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");

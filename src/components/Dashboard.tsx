@@ -1,4 +1,5 @@
 
+import React from "react";
 import { MetricsGrid } from "./MetricsGrid";
 import { ChartSection } from "./ChartSection";
 import { RecentTransactions } from "./RecentTransactions";
