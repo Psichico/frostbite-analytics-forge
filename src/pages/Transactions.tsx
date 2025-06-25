@@ -17,6 +17,12 @@ const Transactions = () => {
     setEditingTransaction(transaction);
   };
 
+  const handleImportTransactions = (importedTransactions: Omit<Transaction, 'id'>[]) => {
+    importedTransactions.forEach(transaction => {
+      addTransaction(transaction);
+    });
+  };
+
   return (
     <div className="p-8 space-y-8">
       <div>
@@ -32,6 +38,7 @@ const Transactions = () => {
         transactions={transactions}
         onDelete={deleteTransaction}
         onEdit={handleEditTransaction}
+        onImport={handleImportTransactions}
       />
     </div>
   );
