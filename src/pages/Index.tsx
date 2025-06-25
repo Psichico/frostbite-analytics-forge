@@ -3,6 +3,9 @@ import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "@/components/Dashboard";
 import Portfolio from "./Portfolio";
 import Transactions from "./Transactions";
+import Analytics from "./Analytics";
+import Dividends from "./Dividends";
+import Charts from "./Charts";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -11,10 +14,14 @@ const Index = () => {
     switch (activeSection) {
       case "portfolio":
         return <Portfolio />;
+      case "analytics":
+        return <Analytics />;
+      case "dividends":
+        return <Dividends />;
+      case "charts":
+        return <Charts />;
       case "transactions":
         return <Transactions />;
-      case "analytics":
-        return <div className="p-8"><h1>Analytics (Coming Soon)</h1></div>;
       case "performance":
         return <div className="p-8"><h1>Performance (Coming Soon)</h1></div>;
       case "wallet":

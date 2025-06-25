@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -108,7 +107,7 @@ export const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) =>
                   id="symbol"
                   placeholder="AAPL"
                   value={formData.symbol}
-                  onChange={(e) => setFormData(prev => ({ ...prev, symbol: e.target.value }))}
+                  onChange={(e) => setFormData(prev => ({ ...prev, symbol: e.target.value.toUpperCase() }))}
                   required
                 />
               </div>
@@ -145,7 +144,10 @@ export const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) =>
             )}
 
             <div>
-              <Label htmlFor="amount">Total Amount</Label>
+              <Label htmlFor="amount">
+                Total Amount 
+                {formData.type === 'dividend' && <span className="text-sm text-gray-500 ml-1">(after taxes)</span>}
+              </Label>
               <Input
                 id="amount"
                 type="number"
@@ -181,10 +183,10 @@ export const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) =>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="qualified">Qualified</SelectItem>
-                    <SelectItem value="non-qualified">Non-Qualified</SelectItem>
-                    <SelectItem value="roc">Return of Capital</SelectItem>
-                    <SelectItem value="foreign">Foreign</SelectItem>
+                    <SelectItem value="qualified">Qualified (Long-term tax rate)</SelectItem>
+                    <SelectItem value="non-qualified">Non-Qualified (Ordinary tax rate)</SelectItem>
+                    <SelectItem value="roc">Return of Capital (Tax-deferred)</SelectItem>
+                    <SelectItem value="foreign">Foreign (May have withholding)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
