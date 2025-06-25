@@ -24,17 +24,23 @@ export const PortfolioCharts = () => {
     { name: 'Other', value: 8, color: '#6b7280' }
   ];
 
-  // Performance by position
+  // Performance by position with colors
   const performanceData = positions
     .map(pos => ({
       symbol: pos.symbol,
       gain: pos.unrealizedGain,
       gainPercent: pos.unrealizedGainPercent,
-      value: pos.marketValue
+      value: pos.marketValue,
+      color: pos.unrealizedGainPercent >= 0 ? '#10b981' : '#ef4444'
     }))
     .sort((a, b) => b.gainPercent - a.gainPercent);
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#6b7280', '#ec4899', '#14b8a6'];
+
+  const CustomBar = (props: any) => {
+    const { fill, ...rest } = props;
+    return <Bar {...rest} fill={props.payload?.color || fill} />;
+  };
 
   return (
     <div className="space-y-6">
@@ -137,11 +143,14 @@ export const PortfolioCharts = () => {
                   return [`$${Number(value).toLocaleString()}`, 'Gain/Loss $'];
                 }}
               />
-              <Bar 
-                dataKey="gainPercent" 
-                fill={(entry) => entry >= 0 ? '#10b981' : '#ef4444'}
-                name="Gain/Loss %"
-              />
+              {performanceData.map((entry, index) => (
+                <Bar 
+                  key={`bar-${index}`}
+                  dataKey="gainPercent" 
+                  fill={entry.color}
+                  name="Gain/Loss %"
+                />
+              ))}
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
