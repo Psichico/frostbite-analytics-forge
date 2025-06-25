@@ -3,8 +3,11 @@ import { MetricsGrid } from "./MetricsGrid";
 import { ChartSection } from "./ChartSection";
 import { RecentTransactions } from "./RecentTransactions";
 import { PortfolioOverview } from "./PortfolioOverview";
+import { usePortfolio } from "@/hooks/usePortfolio";
 
 export const Dashboard = () => {
+  const { summary, transactions } = usePortfolio();
+
   return (
     <div className="p-8 space-y-8">
       <div className="flex items-center justify-between">
@@ -25,14 +28,14 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <MetricsGrid />
+      <MetricsGrid summary={summary} />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <ChartSection />
         <PortfolioOverview />
       </div>
       
-      <RecentTransactions />
+      <RecentTransactions transactions={transactions.slice(0, 10)} />
     </div>
   );
 };

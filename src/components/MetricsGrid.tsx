@@ -1,59 +1,64 @@
 
 import { TrendingUp, TrendingDown, DollarSign, Activity, PieChart, Target } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { PortfolioSummary } from "@/types/portfolio";
 
-const metrics = [
-  {
-    title: "Total Portfolio Value",
-    value: "$247,892.45",
-    change: "+12.3%",
-    changeType: "positive",
-    icon: DollarSign,
-    description: "vs last month"
-  },
-  {
-    title: "Monthly Return",
-    value: "+8.42%",
-    change: "+2.1%",
-    changeType: "positive",
-    icon: TrendingUp,
-    description: "above benchmark"
-  },
-  {
-    title: "Active Positions",
-    value: "23",
-    change: "+3",
-    changeType: "positive",
-    icon: Activity,
-    description: "new positions"
-  },
-  {
-    title: "Asset Allocation",
-    value: "Balanced",
-    change: "Optimized",
-    changeType: "neutral",
-    icon: PieChart,
-    description: "risk profile"
-  },
-  {
-    title: "YTD Performance",
-    value: "+24.7%",
-    change: "+5.2%",
-    changeType: "positive",
-    icon: Target,
-    description: "vs S&P 500"
-  },
-  {
-    title: "Volatility",
-    value: "12.4%",
-    change: "-1.8%",
-    changeType: "positive",
-    icon: TrendingDown,
-    description: "30-day average"
-  }
-];
+interface MetricsGridProps {
+  summary: PortfolioSummary;
+}
 
-export const MetricsGrid = () => {
+export const MetricsGrid = ({ summary }: MetricsGridProps) => {
+  const metrics = [
+    {
+      title: "Total Portfolio Value",
+      value: `$${summary.totalValue.toLocaleString()}`,
+      change: `${summary.totalGainPercent >= 0 ? '+' : ''}${summary.totalGainPercent.toFixed(1)}%`,
+      changeType: summary.totalGainPercent >= 0 ? "positive" : "negative",
+      icon: DollarSign,
+      description: "vs cost basis"
+    },
+    {
+      title: "Unrealized Gain/Loss",
+      value: `${summary.unrealizedGain >= 0 ? '+' : ''}$${Math.abs(summary.unrealizedGain).toLocaleString()}`,
+      change: `${summary.totalGainPercent.toFixed(1)}%`,
+      changeType: summary.unrealizedGain >= 0 ? "positive" : "negative",
+      icon: summary.unrealizedGain >= 0 ? TrendingUp : TrendingDown,
+      description: "unrealized"
+    },
+    {
+      title: "Dividend Income",
+      value: `$${summary.dividendIncome.toLocaleString()}`,
+      change: "YTD",
+      changeType: "positive",
+      icon: Target,
+      description: "total received"
+    },
+    {
+      title: "Cash Balance",
+      value: `$${summary.cash.toLocaleString()}`,
+      change: "Available",
+      changeType: "neutral",
+      icon: Activity,
+      description: "liquid funds"
+    },
+    {
+      title: "Total Invested",
+      value: `$${summary.totalCost.toLocaleString()}`,
+      change: "Cost basis",
+      changeType: "neutral",
+      icon: PieChart,
+      description: "total deployed"
+    },
+    {
+      title: "Portfolio Value",
+      value: `$${(summary.totalValue + summary.cash).toLocaleString()}`,
+      change: "Total worth",
+      changeType: "neutral",
+      icon: DollarSign,
+      description: "including cash"
+    }
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {metrics.map((metric) => {

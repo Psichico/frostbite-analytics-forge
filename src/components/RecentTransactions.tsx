@@ -2,66 +2,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
+import { Transaction } from "@/types/portfolio";
 
-const transactions = [
-  {
-    id: 1,
-    type: "buy",
-    asset: "AAPL",
-    name: "Apple Inc.",
-    amount: "$5,420.00",
-    shares: 32,
-    price: "$169.38",
-    date: "2024-06-24",
-    status: "completed"
-  },
-  {
-    id: 2,
-    type: "sell",
-    asset: "MSFT",
-    name: "Microsoft Corp.",
-    amount: "$3,280.50",
-    shares: 15,
-    price: "$218.70",
-    date: "2024-06-23",
-    status: "completed"
-  },
-  {
-    id: 3,
-    type: "buy",
-    asset: "NVDA",
-    name: "NVIDIA Corp.",
-    amount: "$8,750.00",
-    shares: 25,
-    price: "$350.00",
-    date: "2024-06-22",
-    status: "pending"
-  },
-  {
-    id: 4,
-    type: "dividend",
-    asset: "VTI",
-    name: "Vanguard Total Stock",
-    amount: "$127.45",
-    shares: 150,
-    price: "$0.85",
-    date: "2024-06-21",
-    status: "completed"
-  },
-  {
-    id: 5,
-    type: "buy",
-    asset: "GOOGL",
-    name: "Alphabet Inc.",
-    amount: "$2,890.00",
-    shares: 8,
-    price: "$361.25",
-    date: "2024-06-20",
-    status: "completed"
-  }
-];
+interface RecentTransactionsProps {
+  transactions: Transaction[];
+}
 
-export const RecentTransactions = () => {
+export const RecentTransactions = ({ transactions }: RecentTransactionsProps) => {
+  const getTypeColor = (type: Transaction['type']) => {
+    switch (type) {
+      case 'buy': return 'bg-green-100 text-green-800';
+      case 'sell': return 'bg-red-100 text-red-800';
+      case 'dividend': return 'bg-blue-100 text-blue-800';
+      case 'deposit': return 'bg-emerald-100 text-emerald-800';
+      case 'withdrawal': return 'bg-orange-100 text-orange-800';
+      case 'fee': return 'bg-gray-100 text-gray-800';
+      case 'split': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getTypeIcon = (type: Transaction['type']) => {
+    switch (type) {
+      case 'buy':
+      case 'deposit':
+        return <TrendingUp className="w-4 h-4 text-green-600" />;
+      case 'sell':
+      case 'withdrawal':
+      case 'fee':
+        return <TrendingDown className="w-4 h-4 text-red-600" />;
+      default:
+        return <ArrowRight className="w-4 h-4 text-blue-600" />;
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -74,42 +48,46 @@ export const RecentTransactions = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {transactions.map((transaction) => (
-            <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
-              <div className="flex items-center space-x-4">
-                <div className={`p-2 rounded-lg ${
-                  transaction.type === 'buy' ? 'bg-green-50' :
-                  transaction.type === 'sell' ? 'bg-red-50' : 'bg-blue-50'
-                }`}>
-                  {transaction.type === 'buy' && <TrendingUp className="w-4 h-4 text-green-600" />}
-                  {transaction.type === 'sell' && <TrendingDown className="w-4 h-4 text-red-600" />}
-                  {transaction.type === 'dividend' && <ArrowRight className="w-4 h-4 text-blue-600" />}
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-gray-900">{transaction.asset}</span>
-                    <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
-                      {transaction.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600">{transaction.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {transaction.shares} shares @ {transaction.price}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className={`font-semibold ${
-                  transaction.type === 'buy' ? 'text-red-600' :
-                  transaction.type === 'sell' ? 'text-green-600' : 'text-blue-600'
-                }`}>
-                  {transaction.type === 'buy' ? '-' : '+'}
-                  {transaction.amount}
-                </div>
-                <p className="text-sm text-gray-500">{transaction.date}</p>
-              </div>
+          {transactions.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No transactions yet. Add your first transaction to get started.
             </div>
-          ))}
+          ) : (
+            transactions.map((transaction) => (
+              <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                <div className="flex items-center space-x-4">
+                  <div className="p-2 rounded-lg bg-gray-50">
+                    {getTypeIcon(transaction.type)}
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-gray-900">
+                        {transaction.symbol || transaction.type.toUpperCase()}
+                      </span>
+                      <Badge className={getTypeColor(transaction.type)}>
+                        {transaction.type}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      {transaction.quantity && transaction.price 
+                        ? `${transaction.quantity} shares @ $${transaction.price.toFixed(2)}`
+                        : transaction.notes || 'No details'
+                      }
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className={`font-semibold ${
+                    ['sell', 'dividend', 'deposit'].includes(transaction.type) ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {['sell', 'dividend', 'deposit'].includes(transaction.type) ? '+' : '-'}
+                    ${Math.abs(transaction.amount).toLocaleString()}
+                  </div>
+                  <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
